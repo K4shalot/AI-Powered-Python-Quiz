@@ -64,23 +64,7 @@ You are now ready to run the project!
 
 python manage.py runserver
 Open your web browser and navigate to http://127.0.0.1:8000/.
-Project Structure
 
-├── interview_app/      # The main Django application
-│   ├── static/         # Static files (CSS, JS, Images)
-│   ├── templates/      # HTML templates
-│   ├── models.py       # Data models
-│   ├── views.py        # Request handling logic (views)
-│   └── ...
-├── python_interview/   # Project-level configuration
-│   ├── settings.py     # Main settings file
-│   ├── urls.py         # Main URL routing file
-│   └── ...
-├── .env                # (Local) Secret environment variables
-├── .gitignore          # Files and folders ignored by Git
-├── manage.py           # Django's command-line utility
-├── README.md           # This file
-└── script.py           # Read belwo
 
 So you manage to succesfully setup this somehow working project, congrats!
 Whats next? Where is the questions? What should i do?
@@ -123,14 +107,3 @@ After the script finishes, run the Django server again:
 
 python manage.py runserver
 That's it! Your quiz is now populated with questions. Good luck!
-Project Structure
-
-├── interview_app/      # The main Django application
-│   ├── ...
-├── python_interview/   # Project-level configuration
-│   ├── ...
-├── .env                # (Local) Secret environment variables
-├── .gitignore          # Files and folders ignored by Git
-├── manage.py           # Django's command-line utility
-├── script.py           # Script to populate the database
-└── README.md           # This file
