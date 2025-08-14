@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Quiz</title>
+    <link rel="stylesheet" href="{% static 'ai_quiz_style.css' %}">
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>AI-Powered Quiz</h1>
+
+        <div class="question-box">
+            <h4>Question:</h4>
+            <p>{{ question.question }}</p>
+        </div>
+
+        {% if show_result %}
+            
+            <div class="results-view">
+
+                {% if is_correct %}
+                    <img src="{% static 'images/APPROVERD.png' %}" alt="Correct!" class="result-feedback-image">
+                {% else %}
+                    <img src="{% static 'images/idontknow.png' %}" alt="Incorrect!" class="result-feedback-image">
+                {% endif %}
+
+                <div class="result-section">
+                    <h4>Verdict:</h4>
+                    {% if is_correct %}
+                        <div class="result-verdict correct">
+                            <strong>Correct!</strong> The AI agrees your answer is right.
+                        </div>
+                    {% else %}
+                        <div class="result-verdict incorrect">
+                            <strong>Incorrect.</strong> The AI marked this as incorrect.
+                        </div>
+                    {% endif %}
+                </div>
+                {% if not is_correct %}
+                <div class="explanation-section">
+                    <button type="button" id="explain-mistake-btn" class="explain-btn" data-attempt-id="{{ attempt_id }}">
+                        Explain my mistake
+                    </button>
+                    <div id="explanation-container" class="explanation-box">
+                    </div>
+                </div>
+                {% endif %}
+
+
+                <div class="result-section">
+                    <h4>Your Answer:</h4>
+                    <div class="result-block user-answer">{{ user_answer }}</div>
+                </div>
+
+                <div class="result-section">
+                    <h4>The Ideal Answer:</h4>
+                    <div class="result-block ideal-answer">{{ correct_answer_text }}</div>
+                </div>
+
+                <p class="ai-debug">AI's raw response: <i>{{ ai_response }}</i></p>
+
+                <div class="button-group">
+                    <a href="{% url 'ai-quiz-next' %}" class="submit-btn">Next Question</a>
+                    <a href="{% url 'ai-quiz-result' %}" class="end-quiz-btn">End Quiz</a>
+                </div>
+            </div>
+
+        {% else %}
+
+            <div class="form-view">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <label for="user_answer">Type your answer below:</label>
+                    <textarea id="user_answer" name="user_answer" class="answer-textarea" rows="5" placeholder="Your answer..." required></textarea>
+                    
+                    <div id="hint-container" class="hint-box">
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="submit-btn">Check Answer</button>
+                        <button type="button" id="get-hint-btn" class="hint-btn" data-question-id="{{ question.id }}">Get a Hint</button>
+                        <a href="{% url 'ai-quiz-result' %}" class="end-quiz-btn">End Quiz</a>
+                    </div>
+                </form>
+            </div>
+
+        {% endif %}
+
+
+        {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hintButton = document.getElementById('get-hint-btn');
+            const hintContainer = document.getElementById('hint-container');
+
+            if (hintButton) {
+                hintButton.addEventListener('click', function() {
+                    const questionId = this.dataset.questionId;
+                    const url = `/api/hint/${questionId}/`;
+
+                    hintButton.disabled = true;
+                    hintContainer.innerHTML = 'Getting a hint from AI...';
+                    hintContainer.style.display = 'block';
+
+                    fetch(url)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                hintContainer.innerHTML = `<strong>Hint:</strong> ${data.hint}`;
+                            } else {
+                                hintContainer.innerHTML = `Error: ${data.error}`;
+                                hintContainer.classList.add('error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Network error:', error);
+                            hintContainer.innerHTML = 'Could not connect to the server or an error occurred.';
+                            hintContainer.classList.add('error');
+                        });
+                });
+            }
+
+            const explainButton = document.getElementById('explain-mistake-btn');
+            const explanationContainer = document.getElementById('explanation-container');
+
+            if (explainButton) {
+                explainButton.addEventListener('click', function() {
+                    const attemptId = this.dataset.attemptId;
+                    const url = `/api/explain/${attemptId}/`;
+
+                    explainButton.style.display = 'none';
+                    explanationContainer.innerHTML = 'Our AI mentor is thinking...';
+                    explanationContainer.style.display = 'block';
+
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                explanationContainer.innerHTML = data.explanation.replace(/\n/g, '<br>'); 
+                            } else {
+                                explanationContainer.innerHTML = `Error: ${data.error}`;
+                                explanationContainer.classList.add('error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Network error:', error);
+                            explanationContainer.innerHTML = 'Could not get an explanation.';
+                            explanationContainer.classList.add('error');
+                        });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

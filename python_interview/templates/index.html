@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Main page — Quiz</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    
+    <style>
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1>Yo Gurt!</h1>
+
+        <div class="button-container">
+            <a href="{% url 'quiz-start'%}" class="start-quiz-button">Start Classic Quiz</a>
+            
+            <a href="{% url 'ai-quiz-start' %}" class="start-quiz-button ai-button">Start AI Quiz</a>
+        </div>
+
+        <p>Questions you can find here:</p>
+
+        <ul class="questions-list">
+            {% for question in questions %}
+                <li>{{ question.id }}. {{ question.question|truncatechars:80 }}</li>
+            {% empty %}
+                <li>There are no questions yet n-word.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

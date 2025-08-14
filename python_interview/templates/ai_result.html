@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Quiz Results</title>
+    <link rel="stylesheet" href="{% static 'ai_results_style.css' %}">
+</head>
+<body>
+    <div class="results-container">
+        <h1>Quiz Finished!</h1>
+        <div class="score-summary">
+            You answered <span class="score">{{ correct_count }}</span> out of <span class="score">{{ total }}</span> questions correctly.
+        </div>
+
+        {% if incorrect_attempts %}
+            <div class="answers-section">
+                <h2>Review Your Incorrect Answers</h2>
+                {% for attempt in incorrect_attempts %}
+                    <div class="result-item incorrect-item">
+                        <p class="question-text"><strong>Q:</strong> {{ attempt.question.question }}</p>
+                        <p class="answer-text"><strong>Your Answer:</strong> {{ attempt.user_text_answer }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if correct_attempts %}
+            <div class="answers-section">
+                <h2>Your Correct Answers</h2>
+                {% for attempt in correct_attempts %}
+                    <div class="result-item correct-item">
+                        <p class="question-text"><strong>Q:</strong> {{ attempt.question.question }}</p>
+                        <p class="answer-text"><strong>Your Answer:</strong> {{ attempt.user_text_answer }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <a href="{% url 'home' %}" class="action-btn">Back to Home</a>
+    </div>
+</body>
+</html>

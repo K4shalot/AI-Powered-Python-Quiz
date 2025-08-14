@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Результати тесту</title>
+    <link rel="stylesheet" href="{% static 'results.css' %}">
+</head>
+<body>
+    <div class="quiz-container">
+        <h2 class="title">Result</h2>
+        <p class="result-score">Correct answers: <span>{{ correct_count }}</span> з <span>{{ total }}</span></p>
+
+        <div class="result-section correct-section">
+            <h3 class="section-title">Correct questins:</h3>
+            <ul class="question-list">
+                {% for q in correct_questions %}
+                    <li>{{ q.question }}</li>
+                {% empty %}
+                    <li>There no correct answers </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="result-section incorrect-section">
+            <h3 class="section-title"> Uncorrect questons:</h3>
+            <ul class="question-list">
+                {% for q in incorrect_questions %}
+                    <li>{{ q.question }}</li>
+                {% empty %}
+                    <li>Kinda good gurt</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="actions">
+            <a href="{% url 'home' %}" class="btn btn-primary">Back to main</a>
+            <a href="{% url 'quiz-question' question_id=1 %}" class="btn btn-secondary">Test Again </a>
+        </div>
+    </div>
+</body>
+</html>
