@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Питання</title>
+    <link rel="stylesheet" href="{% static 'question.css' %}">
+    <style>
+        .correct-answer { color: green; font-weight: bold; }
+        .incorrect-answer { color: red; font-weight: bold; }
+        .result-info { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 15px; }
+        .next-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h2 class="question-title">Питання:</h2>
+        <p class="question-text">{{ question.question }}</p>
+
+        {% if not show_result %}
+            <form method="post" action="{% url 'quiz-question' question.id %}" class="quiz-form">
+                {% csrf_token %}
+                {% for option in question.options.all %}
+                    <label class="option-label">
+                        <input type="radio" name="answer" value="{{ option.key }}" required class="option-input">
+                        <span class="option-key">{{ option.key }}.</span> {{ option.text }}
+                    </label>
+                {% endfor %}
+                <button type="submit" class="submit-btn">Відповісти</button>
+            </form>
+        {% else %}
+            <div class="result-info">
+                {% if is_correct %}
+                    <p class="correct-answer">Правильно!</p>
+                    <p><strong>Правильна відповідь:</strong> {{ correct_answer_key }}. {{ correct_answer_text }}</p>
+                {% else %}
+                    <p class="incorrect-answer">Неправильно.</p>
+                    <p><strong>Ваша відповідь:</strong> {{ selected_answer }}</p>
+                    <p><strong>Правильна відповідь:</strong> <span class="correct-answer">{{ correct_answer_key }}. {{ correct_answer_text }}</span></p>
+                {% endif %}
+            </div>
+            
+            <a href="{% url 'quiz-next' %}" class="next-btn">Наступне питання</a>
+        {% endif %}
+        
+        <form method="get" action="{% url 'quiz-result' %}" class="end-form" style="margin-top: 20px;">
+            <button type="submit" class="end-quiz-button">Завершити квіз</button>
+        </form>
+    </div>
+</body>
+</html>

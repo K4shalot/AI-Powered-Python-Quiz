@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f4f8;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Aligned to top */
+    min-height: 100vh;
+    margin: 0;
+    padding: 40px 20px;
+}
+
+.results-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+    padding: 30px 40px;
+    text-align: center;
+    border-top: 5px solid #1abc9c; /* Green accent for results */
+}
+
+h1 {
+    color: #1abc9c;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+h2 {
+    color: #555;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    text-align: left;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.score-summary {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+.score-summary .score {
+    font-weight: 700;
+    color: #1abc9c;
+    font-size: 1.3rem;
+}
+
+.answers-section {
+    margin-bottom: 20px;
+}
+
+.result-item {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.result-item.correct-item {
+    border-left: 5px solid #2ecc71; /* Green */
+}
+
+.result-item.incorrect-item {
+    border-left: 5px solid #e74c3c; /* Red */
+}
+
+.result-item p {
+    margin: 5px 0;
+}
+
+.result-item .question-text {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.result-item .answer-text {
+    color: #555;
+    font-style: italic;
+}
+
+.action-btn {
+    display: inline-block;
+    width: 100%;
+    max-width: 300px;
+    padding: 15px;
+    background: linear-gradient(90deg, #4a90e2, #2d6ab4);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 20px;
+}
+
+.action-btn:hover {
+    background: linear-gradient(90deg, #3a80d2, #1d5a94);
+    transform: translateY(-2px);
+}
