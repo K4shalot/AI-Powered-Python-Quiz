@@ -3,7 +3,8 @@ from django.conf import settings
 from .models import Question, AIEvaluationAttempt, Option
 import random
 import google.generativeai as genai
-from django.http import JsonResponse 
+from django.http import JsonResponse
+import json 
 
 
 def home_view(request):
@@ -125,50 +126,71 @@ def ai_quiz_view(request, question_id):
         except Option.DoesNotExist:
             context['error'] = "Could not find the correct answer for this question."
             return render(request, 'ai_question.html', context)
+        
+        complexity_levels = ["Trainee", "Junior", "Strong Junior", "Middle", "Strong Middle", "Senior"]
 
         prompt = f"""
-        Evaluate the user's answer to the question.
+        You are an expert evaluator for a Python quiz. Perform two tasks:
+        1. Evaluate the user's answer.
+        2. Determine the complexity of the original question.
 
-        Question: "{question_text}"
-        Correct answer: "{correct_answer_text}"
-        User's answer: "{user_answer}"
+        **Task 1: Evaluate Answer**
+        - Question: "{question_text}"
+        - Ideal Correct Answer: "{correct_answer_text}"
+        - User's Answer: "{user_answer}"
 
-        Is the user's answer correct or very close in meaning to the correct answer?
-        Answer with only one word: 'True' if yes, and 'False' if no.
+        **Task 2: Determine Complexity**
+        - Classify the question's complexity into one of these levels: {', '.join(complexity_levels)}.
+
+        **Response Format:**
+        You MUST respond with a valid JSON object containing two keys: "is_correct" (boolean) and "complexity" (string).
+        Do not add any text before or after the JSON object.
+
+        Example of a valid response:
+        {{
+          "is_correct": true,
+          "complexity": "Junior"
+        }}
         """
 
         try:
             genai.configure(api_key=settings.GOOGLE_API_KEY)
             model = genai.GenerativeModel('gemini-1.5-flash')
             response = model.generate_content(prompt)
-            ai_raw_response = response.text.strip()
-
-            is_correct = ai_raw_response.lower() == 'true'
             
-            # --- ВИПРАВЛЕННЯ ТУТ ---
-            # Зберігаємо створений об'єкт, щоб отримати його ID
+            cleaned_response = response.text.strip().replace('```json', '').replace('```', '')
+            ai_data = json.loads(cleaned_response)
+
+            is_correct = ai_data.get('is_correct', False)
+            question_complexity = ai_data.get('complexity', 'Unknown')
+
+            if question.complexity is None or question.complexity == "":
+                question.complexity = question_complexity
+                question.save()
+
             new_attempt = AIEvaluationAttempt.objects.create(
                 question=question,
                 user_text_answer=user_answer,
-                ai_response=ai_raw_response,
+                ai_response=response.text,
                 is_correct_by_ai=is_correct
             )
-            # --- КІНЕЦЬ ВИПРАВЛЕННЯ ---
 
             context['show_result'] = True
             context['user_answer'] = user_answer
             context['is_correct'] = is_correct
             context['correct_answer_text'] = correct_answer_text
-            context['ai_response'] = ai_raw_response
-            
-            # --- ВИПРАВЛЕННЯ ТУТ ---
-            # Передаємо ID в шаблон, щоб кнопка "Explain my mistake" знала, що пояснювати
+            context['ai_response'] = response.text
             context['attempt_id'] = new_attempt.id
-            # --- КІНЕЦЬ ВИПРАВЛЕННЯ ---
+            context['question_complexity'] = question_complexity
 
+        except (json.JSONDecodeError, KeyError) as e:
+            context['error'] = f"Error processing AI response: {e}. Raw response: {response.text}"
         except Exception as e:
             context['error'] = f"An error occurred while contacting the AI service: {e}"
 
+    elif question.complexity:
+        context['question_complexity'] = question.complexity
+        
     return render(request, 'ai_question.html', context)
 
 def ai_quiz_start_view(request):
