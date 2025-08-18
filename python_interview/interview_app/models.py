@@ -1,10 +1,22 @@
 from django.db import models
 
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Categories"
+
 class Question(models.Model):
     question = models.TextField()
     correct_answer_key = models.CharField(max_length=1)
     user_answer = models.CharField(max_length=1, null=True, blank=True)
     complexity = models.CharField(max_length=50, blank=True, null=True)
+    
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='questions')
 
     def __str__(self):
         return self.question[:60]

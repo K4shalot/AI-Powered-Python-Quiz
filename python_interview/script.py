@@ -2,12 +2,12 @@ import os
 import django
 import json
 import random
+from interview_app.models import Question, Option
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'python_interview.settings')
 
 django.setup()
 
-from interview_app.models import Question, Option
 
 def import_questions_from_json():
 

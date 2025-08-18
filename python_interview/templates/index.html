@@ -5,15 +5,6 @@
     <meta charset="UTF-8">
     <title>Main page — Quiz</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
-    
-    <style>
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 20px 0;
-        }
-    </style>
 </head>
 <body>
     <div class="main-container">
@@ -22,16 +13,30 @@
         <div class="button-container">
             <a href="{% url 'quiz-start'%}" class="start-quiz-button">Start Classic Quiz</a>
             
-            <a href="{% url 'ai-quiz-start' %}" class="start-quiz-button ai-button">Start AI Quiz</a>
+            <a href="{% url 'ai-quiz-start' %}" class="start-quiz-button ai-button">Start AI Quiz (Random)</a>
+        </div>
+        
+        <hr>
+        <h3>Or start a quiz by category:</h3>
+        <div class="category-grid">
+            {% for category in categories %}
+                <a href="{% url 'ai-quiz-start-category' category.id %}" class="category-button">
+                    {{ category.name }}
+                </a>
+            {% empty %}
+                <p>No categories found yet. Run the categorization script.</p>
+            {% endfor %}
         </div>
 
+
+        <hr style="margin-top: 30px;">
         <p>Questions you can find here:</p>
 
         <ul class="questions-list">
             {% for question in questions %}
                 <li>{{ question.id }}. {{ question.question|truncatechars:80 }}</li>
             {% empty %}
-                <li>There are no questions yet n-word.</li>
+                <li>There are no questions yet.</li>
             {% endfor %}
         </ul>
     </div>

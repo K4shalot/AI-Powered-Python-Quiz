@@ -26,7 +26,8 @@ from interview_app.views import (
     ai_next_question_view,
     ai_quiz_result_view,
     quiz_hint_view,
-    explain_mistake_view
+    explain_mistake_view,
+    ai_quiz_start_by_category_view
 )
 
 
@@ -45,4 +46,5 @@ urlpatterns = [
     path('ai-quiz/result/', ai_quiz_result_view, name='ai-quiz-result'),
     path('api/hint/<int:question_id>/', quiz_hint_view, name='quiz-hint'),
     path('api/explain/<int:attempt_id>/', explain_mistake_view, name='quiz-explain-mistake'),
+    path('ai-quiz/category/<int:category_id>/', ai_quiz_start_by_category_view, name='ai-quiz-start-category'),
 ]

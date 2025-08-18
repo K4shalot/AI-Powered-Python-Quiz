@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
-from .models import Question, AIEvaluationAttempt, Option
+from .models import Question, AIEvaluationAttempt, Option, Category
 import random
 import google.generativeai as genai
 from django.http import JsonResponse
@@ -10,7 +10,12 @@ import json
 def home_view(request):
     request.session.flush()
     questions = Question.objects.all()
-    return render(request, 'index.html', {'questions': questions})
+    categories = Category.objects.all()
+    context = {
+        'questions': questions,
+        'categories': categories,
+    }
+    return render(request, 'index.html', context)
 
 def quiz_question_view(request, question_id=None):
     if 'question_order' not in request.session:
@@ -21,7 +26,6 @@ def quiz_question_view(request, question_id=None):
         request.session['answers'] = {}
 
     question_order = request.session['question_order']
-    current_index = request.session['current_index']
 
     if question_id is None:
         if not question_order:
@@ -319,3 +323,17 @@ def explain_mistake_view(request, attempt_id):
             return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
+
+def ai_quiz_start_by_category_view(request, category_id):
+    question_ids = list(Question.objects.filter(category_id=category_id).values_list('id', flat=True))
+    
+    if not question_ids:
+        return redirect('home')
+
+    random.shuffle(question_ids)
+    
+    request.session['ai_question_order'] = question_ids
+    request.session['ai_current_index'] = 0
+
+    first_question_id = question_ids[0]
+    return redirect('ai-quiz-question', question_id=first_question_id)

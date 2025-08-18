@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -28,6 +27,7 @@ SECRET_KEY = os.getenv('DJANGO_KEY')
 
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+GOOGLE_API_KEY_1 = os.getenv('GOOGLE_API_KEY_1')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
