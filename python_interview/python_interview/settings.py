@@ -9,7 +9,7 @@ load_dotenv(BASE_DIR / '.env')
 
 
 
-SECRET_KEY = os.getenv('DJANGO_KEY')
+SECRET_KEY = 'django-insecure-xv=5+)t(kkph5=y)f*(r9qqijnh+azi-_@7ve8wi7fs+gy0wne'#os.getenv('DJANGO_KEY')
 if not SECRET_KEY:
     raise ValueError("No DJANGO_KEY set for Django application")
 

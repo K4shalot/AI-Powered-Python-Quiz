@@ -51,3 +51,5 @@ jsonquestions_2.txt
 jsonquestions_3.txt
 
 db.sqlite3
+
+.ruff_cache
