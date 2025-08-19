@@ -33,7 +33,7 @@ class Option(models.Model):
 class AIEvaluationAttempt(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='ai_attempts')
     user_text_answer = models.TextField()
-    ai_response = models.CharField(max_length=50, blank=True)
+    ai_response = models.TextField(blank=True)
     is_correct_by_ai = models.BooleanField(default=False) 
     created_at = models.DateTimeField(auto_now_add=True)
 
