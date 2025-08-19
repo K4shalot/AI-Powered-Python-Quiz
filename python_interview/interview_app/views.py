@@ -131,30 +131,28 @@ def ai_quiz_view(request, question_id):
             context['error'] = "Could not find the correct answer for this question."
             return render(request, 'ai_question.html', context)
         
-        complexity_levels = ["Trainee", "Junior", "Strong Junior", "Middle", "Strong Middle", "Senior"]
+        complexity_levels = ["Trainee", "Junior", "Middle", "Senior"]
 
         prompt = f"""
-        You are an expert evaluator for a Python quiz. Perform two tasks:
-        1. Evaluate the user's answer.
-        2. Determine the complexity of the original question.
+        You are an expert Senior Python Developer acting as an evaluator for a quiz. Perform two tasks and respond in a valid JSON format.
 
-        **Task 1: Evaluate Answer**
+        **Task 1: Evaluate User's Answer**
         - Question: "{question_text}"
         - Ideal Correct Answer: "{correct_answer_text}"
         - User's Answer: "{user_answer}"
+        - Evaluation Criteria: Determine if the user's answer is semantically about 70% or more similar to the ideal answer. Focus on the core meaning, not exact wording.
 
-        **Task 2: Determine Complexity**
-        - Classify the question's complexity into one of these levels: {', '.join(complexity_levels)}.
+        **Task 2: Determine Question Complexity**
+        - Classify the question's complexity into ONE of the levels from the list: {', '.join(complexity_levels)}.
+        - Use these definitions to guide your choice:
+          - **Trainee:** Basic syntax, "what is X" definitions (e.g., what is a variable?).
+          - **Junior:** Core concepts, common data types (lists, dicts), simple functions, basic OOP.
+          - **Middle:** Advanced concepts like decorators, generators, context managers, GIL, deeper standard library knowledge.
+          - **Senior:** Python internals (garbage collection, memory management, C-API), complex architectural patterns, deep concurrency understanding.
 
         **Response Format:**
         You MUST respond with a valid JSON object containing two keys: "is_correct" (boolean) and "complexity" (string).
         Do not add any text before or after the JSON object.
-
-        Example of a valid response:
-        {{
-          "is_correct": true,
-          "complexity": "Junior"
-        }}
         """
 
         try:
