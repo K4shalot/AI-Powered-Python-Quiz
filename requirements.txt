@@ -16,6 +16,7 @@ dj-database-url==2.3.0
 Django==5.1.7
 fanstatic==1.5
 flower==2.0.1
+git-filter-repo==2.47.0
 google-ai-generativelanguage==0.6.15
 google-api-core==2.25.1
 google-api-python-client==2.179.0
@@ -46,12 +47,14 @@ pydantic_core==2.33.2
 PyMuPDF==1.26.3
 pyparsing==3.2.3
 python-dateutil==2.9.0.post0
+python-decouple==3.8
 python-dotenv==1.0.1
 pytz==2025.2
 PyYAML==6.0.2
 redis==6.3.0
 requests==2.32.4
 rsa==4.9.1
+ruff==0.12.9
 setuptools==80.9.0
 six==1.17.0
 sqlparse==0.5.3
